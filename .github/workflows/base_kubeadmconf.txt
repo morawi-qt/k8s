@@ -1,0 +1,34 @@
+apiVersion: kubeadm.k8s.io/v1alpha3
+#clusterName: common-services
+kind: ClusterConfiguration
+etcd:
+  local:
+    extraArgs:
+      name: "FQDN"
+      listen-client-urls: "https://127.0.0.1:2379,https://IP:2379"
+      advertise-client-urls: "https://IP:2379"
+      listen-peer-urls: "https://IP:2380"
+      initial-advertise-peer-urls: "https://IP:2380"
+      initial-cluster: "FQDN=https://IP:2380"
+      #initial-cluster-state: existing
+    serverCertSANs:
+      - FQDN
+      - IP
+    peerCertSANs:
+      - FQDN
+      - IP
+networking:
+    podSubnet: "192.168.0.0/16"
+kubernetesVersion: "v1.12.3"
+apiServerExtraArgs:
+  cloud-provider: aws
+controllerManagerExtraArgs:
+  cloud-provider: aws
+apiServerCertSANs:
+- "internal-common-services-k8s-2104666358.eu-west-2.elb.amazonaws.com"
+controlPlaneEndpoint: "internal-common-services-k8s-2104666358.eu-west-2.elb.amazonaws.com:6443"
+nodeRegistration:
+  name: "FQDN"
+  kubeletExtraArgs:
+    cloud-provider: aws
+#NEWHEADER
