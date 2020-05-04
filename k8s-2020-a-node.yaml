@@ -1,0 +1,58 @@
+
+apiVersion: kubeadm.k8s.io/v1beta2
+clusterName: k8s-2020-b-eu-west-01
+kind: ClusterConfiguration
+api:
+    controlPlaneEndpoint: "https://k8s-2020-b-eu-west-01-kubeapinlb-f76fefb21bc61d37.elb.eu-west-1.amazonaws.com:6443"
+    advertisedAddress: 10.7.1.20
+etcd:
+  local:
+    extraArgs:
+      name: "ip-10-7-1-22.eu-west-1.compute.internal=10.7.1.22"
+      listen-client-urls: "https://127.0.0.1:2379,https://10.7.1.20:2379,https://10.7.1.22:2379,https://10.7.1.24:2379"
+      advertise-client-urls: "https://10.7.1.20:2379,https://10.7.1.22:2379,https://10.7.1.24:2379"
+      listen-peer-urls: "https://10.7.1.20:2380,https://10.7.1.22:2380,https://10.7.1.24:2380"
+      initial-advertise-peer-urls: "https://10.7.1.20:2380,https://10.7.1.22:2380,https://10.7.1.24:2380"
+      initial-cluster: "ip-10-7-1-20.eu-west-1.compute.internal=https://10.7.1.20:2380,ip-10-7-1-22.eu-west-1.compute.internal=https://10.7.1.22:2380,ip-10-7-1-24.eu-west-1.compute.internal=https://10.7.1.22:2480"
+      initial-cluster-state: existing
+    serverCertSANs:
+      - ip-10-7-1-20.eu-west-1.compute.internal
+      - 10.7.1.20
+      - ip-10-7-1-22.eu-west-1.compute.internal
+      - 10.7.1.22
+      - ip-10-7-1-24.eu-west-1.compute.internal
+      - 10.7.1.24
+    peerCertSANs:
+      - ip-10-7-1-20.eu-west-1.compute.internal
+      - 10.7.1.20
+      - ip-10-7-1-22.eu-west-1.compute.internal
+      - 10.7.1.22
+      - ip-10-7-1-24.eu-west-1.compute.internal
+      - 10.7.1.24
+    endpoints:
+      - https://10.7.1.20:2379
+      - https://10.7.1.22:2379
+      - https://10.7.1.24:2379
+    caFile: /etc/kubernetes/pki/etcd/ca.pem
+    certFile: /etc/kubernetes/pki/etcd/client.pem
+    keyFile: /etc/kubernetes/pki/etcd/client-key.pem
+
+networking:
+    podSubnet: "192.168.0.0/16"
+kubernetesVersion: "v1.17.0"
+apiServerExtraArgs:
+  cloud-provider: aws
+controllerManagerExtraArgs:
+  cloud-provider: aws
+apiServerCertSANs:
+- "k8s-2020-b-eu-west-01-kubeapinlb-f76fefb21bc61d37.elb.eu-west-1.amazonaws.com"
+controlPlaneEndpoint: "k8s-2020-b-eu-west-01-kubeapinlb-f76fefb21bc61d37.elb.eu-west-1.amazonaws.com:6443"
+nodeRegistration:
+  name: "ip-10-7-1-22.eu-west-1.compute.internal"
+  kubeletExtraArgs:
+    cloud-provider: aws
+
+kind: InitConfiguration
+nodeRegistration:
+  kubeletExtraArgs:
+    cgroup-driver: "systemd"
