@@ -1,0 +1,9 @@
+#!/bin/bash
+  
+helm repo add google  https://kubernetes-charts.storage.googleapis.com/
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo add kubernetes-charts https://kubernetes-charts.storage.googleapis.com/
+helm repo add fabric8 https://fabric8.io/helm
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
+
+exit 0
